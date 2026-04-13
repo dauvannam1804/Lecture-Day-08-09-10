@@ -340,6 +340,11 @@ def rag_answer(
     if verbose:
         print(f"\n[RAG] Query: {query}")
         print(f"[RAG] Retrieved {len(candidates)} candidates (mode={retrieval_mode})")
+        for i, c in enumerate(candidates):
+            print(f"  --- Candidate {i+1} (Score: {c.get('score', 0):.3f}) ---")
+            print(f"  Source: {c['metadata'].get('source', 'unknown')}")
+            print(f"  Content: {c['text']}...") # In 500 ký tự đầu của mỗi chunk
+            print("-" * 30)
 
     # --- Bước 2: Post-process (MMR or simple truncate) ---
     if use_mmr:
@@ -391,7 +396,7 @@ def compare_retrieval_strategies(query: str) -> None:
     print(f"Query: {query}")
     print('='*60)
 
-    strategies = ["dense", "sparse", "hybrid"]  # Thêm "sparse" sau khi implement
+    strategies = ["dense", "hybrid"]  # Thêm "sparse" sau khi implement
 
     for strategy in strategies:
         print(f"\n--- Strategy: {strategy} ---")
@@ -403,7 +408,6 @@ def compare_retrieval_strategies(query: str) -> None:
             print(f"Chưa implement: {e}")
         except Exception as e:
             print(f"Lỗi: {e}")
-
 
 # =============================================================================
 # MAIN — Demo và Test
@@ -433,7 +437,15 @@ if __name__ == "__main__":
             )
             print("\nANSWER:")
             print(result["answer"])
-            print("\nSOURCES:")
+            
+            print("\nTHÔNG TIN CHI TIẾT CÁC NGUỒN TRÍCH DẪN:")
+            for i, chunk in enumerate(result["chunks_used"]):
+                source_name = chunk["metadata"].get("source", "unknown")
+                print(f"[{i+1}] Nguồn: {source_name}")
+                print(f"    Nội dung: {chunk['text'].strip()[:1000]}...") # In tối đa 1000 ký tự
+                print("-" * 20)
+
+            print("\nSOURCES (đã dùng):")
             print(", ".join(result["sources"]))
         except Exception as e:
             print(f"Lỗi: {e}")

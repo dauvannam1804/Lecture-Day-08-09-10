@@ -5,10 +5,10 @@ Generated: 2026-04-13 15:52
 
 | Metric | Average Score |
 |--------|--------------|
-| Faithfulness | 3.80/5 |
-| Relevance | 3.80/5 |
+| Faithfulness | 4.80/5 |
+| Relevance | 4.70/5 |
 | Context Recall | 5.00/5 |
-| Completeness | 3.90/5 |
+| Completeness | 4.00/5 |
 
 ## Per-Question Results
 
