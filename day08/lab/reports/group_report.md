@@ -1,77 +1,107 @@
-# Group Report — Lab Day 08: RAG Pipeline
+# Báo Cáo Nhóm — Lab Day 08: Full RAG Pipeline
 
-Day 08 — RAG Pipeline  
-**Ngày nộp:** 2026-04-13  
-Nguyễn Trí Cao, Đậu Năm Nam, Lê Minh Tuấn, Cao Diệu Ly
+**Tên nhóm:** Team RAG 
+**Thành viên:**
+| Tên | Vai trò | Email |
+|-----|---------|-------|
+| Đậu Văn Nam | Tech Lead | dauvannam321@gmail.com |
+| Tuân | Retrieval Owner | tuan@example.com |
+| Ly | Eval Owner | caodieuly1508@gmail.com |
+| Nguyễn Trí Cao | Documentation Owner | tricao2003@gmail.com |
 
+**Ngày nộp:** 13/04/2026  
+**Repo:** `https://github.com/dauvannam1804/Lecture-Day-08-09-10`
 
-
----
-
-## 1) Quyết định kỹ thuật (cấp nhóm)
-
-### 1.1 Indexing + Chunking
-- **Chiến lược chunking:** Paragraph-based để tránh cắt giữa câu/điều khoản (giữ tính mạch lạc của SOP/policy).
-- **Thông số:** `chunk_size = 400 tokens`, `overlap = 80 tokens` (cân bằng giữa “đủ ngữ cảnh” và “không quá dài” cho retrieval + generation).
-- **Embedding model:** `text-embedding-3-small` (ổn định, chi phí hợp lý cho corpus nhỏ, phù hợp nhu cầu demo/lab).
-- **Vector store:** ChromaDB (persistent) + cosine similarity.
-
-### 1.2 Metadata schema (phục vụ retrieval + citation + filter)
-Nhóm thống nhất chuẩn metadata tối thiểu để:
-- Hỗ trợ **citation** rõ ràng (trả về `[1]`, `[2]` dựa trên `source/section`).
-- Cho phép mở rộng **filter theo ngữ cảnh** (ví dụ department / effective_date).
-
-**Các field chính đã dùng:** `source`, `section`, `effective_date`, `department`, `access`.
-
-### 1.3 Retrieval: chọn Baseline làm cấu hình “best overall”
-Nhóm triển khai 2 cấu hình và A/B theo scorecard:
-- **Baseline (Sprint 2):** Dense retrieval (vector similarity).
-- **Variant (Sprint 3):** Hybrid (Dense + BM25) và fusion bằng **RRF (Reciprocal Rank Fusion)**.
-
-**Kết luận chọn cấu hình chạy “best” (ưu tiên khi grading):**
-- Chọn **Baseline (dense)** làm cấu hình chính vì **điểm trung bình tốt hơn và ổn định hơn** trên bộ test nội bộ (đặc biệt `Relevance`/`Completeness`).
-- Variant Hybrid giữ lại như **đường hướng tối ưu tiếp theo** cho các truy vấn có keyword/alias mạnh (ví dụ “Approval Matrix”, mã lỗi), nhưng cần thêm bước lọc nhiễu.
-
-### 1.4 Generation: prompt grounded + nguyên tắc abstain
-Nhóm thống nhất prompt theo nguyên tắc:
-- **Chỉ trả lời dựa trên context**.
-- **Thiếu context thì abstain** (không bịa), đồng thời vẫn trả lời ngắn gọn + có citation khi có thể.
-- **Temperature = 0** để giảm dao động khi chấm điểm.
-
-### 1.5 Evaluation: LLM-as-Judge để so sánh A/B
-Nhóm dùng scorecard theo 4 metric: `Faithfulness`, `Relevance`, `Context Recall`, `Completeness`.  
-Mục tiêu là ra quyết định dựa trên trade-off thực tế (không chỉ nhìn Recall).
 
 ---
 
-## 2) Kết quả A/B và trade-off quan trọng
+## 1. Pipeline nhóm đã xây dựng (150–200 từ)
 
-### 2.1 Scorecard tổng quan (từ `results/`)
-- **Baseline (dense):** Faithfulness **3.80**, Relevance **3.80**, Recall **5.00**, Completeness **3.90**
-- **Variant (hybrid_rrf):** Faithfulness **3.80**, Relevance **3.80**, Recall **5.00**, Completeness **3.60**
+Hệ thống RAG của nhóm được thiết kế để xử lý truy vấn cho khối IT/CS Helpdesk, đòi hỏi phải cân bằng giữa khả năng hiểu ngữ nghĩa và độ chính xác của từ khóa chuyên ngành (mã lỗi, mã SLA).
 
-=> **Hybrid không cải thiện overall**, dù vẫn giữ Recall cao.
+**Chunking decision:**
+Nhóm sử dụng cấu hình `chunk_size = 400 tokens` và `overlap = 80 tokens`. Phương pháp tách chunk được cấu hình theo **Paragraph-based splitting** (tách theo `\n\n`) thay vì cắt ký tự cứng. Điều này giúp giữ trọn vẹn ngữ nghĩa của từng điều khoản chính sách không bị đứt đoạn.
 
-### 2.2 “Noise Overload” là failure mode chính của Hybrid
-Quan sát chung khi bật BM25 + fusion:
-- BM25 kéo về nhiều chunk “đúng keyword nhưng lệch ngữ cảnh”, làm context block bị loãng.
-- LLM dễ **mất trọng tâm** khi tổng hợp, dẫn đến giảm `Completeness` (thiếu bước/quy trình) dù `Recall` vẫn cao.
+**Embedding model:**
+Sử dụng mô hình OpenAI `text-embedding-3-small` để cân bằng giữa chi phí, tốc độ và độ phân giải không gian vector.
 
-### 2.3 Abstain/Insufficient-context phải cực kỳ chặt
-Một điểm nhóm rút ra từ kết quả variant là: khi query thiếu dữ kiện hoặc docs không có câu trả lời, **format abstain và cách diễn đạt** ảnh hưởng trực tiếp đến điểm `Faithfulness/Relevance`.  
-Baseline xử lý “an toàn” hơn; variant cần tinh chỉnh prompt/guardrails để tránh trả lời quá ngắn hoặc không đúng kỳ vọng rubric.
+**Retrieval variant (Sprint 3):**
+Nhóm đã phát triển và thử nghiệm các cấu hình **Sparse (BM25)** và **Hybrid (Dense + BM25 kết hợp qua RRF)**. Việc thêm Keyword Search (Sparse) nhằm khắc phục điểm yếu của Vector Similarity khi user truy vấn các từ khóa cực kỳ đặc thù như `ERR-403-AUTH` hoặc thẻ `SLA P1`.
 
 ---
 
-## 3) Quyết định cuối cùng và kế hoạch tối ưu tiếp theo
+## 2. Quyết định kỹ thuật quan trọng nhất (200–250 từ)
 
-### 3.1 Quyết định cuối cùng (để ưu tiên điểm)
-- Dùng **Dense baseline** làm cấu hình chính khi cần kết quả ổn định.
-- Giữ **Hybrid + RRF** như cấu hình thử nghiệm; chỉ bật khi chắc chắn có biện pháp giảm nhiễu.
+**Quyết định:** Chọn chiến lược Retrieval phù hợp để cải thiện điểm Completeness và Faithfulness, đánh đổi giữa Dense, Sparse, và Hybrid.
 
-### 3.2 Nếu có thêm thời gian
-Nhóm ưu tiên 2 hướng:
-1) **Reranking (cross-encoder / rerank model)** sau retrieval để lọc nhiễu trước khi build context.  
-2) **Metadata-driven filtering** (theo `department`, `effective_date`, hoặc loại tài liệu) để giảm candidate set cho BM25/hybrid.
+**Bối cảnh vấn đề:**
+Nhóm nhận thấy với các tài liệu Helpdesk, user thường xuyên đưa các mã lỗi chính xác hoặc keyword viết tắt vào câu hỏi. Dense Retrieval thường mang lại ngữ cảnh mạch lạc nhưng đôi khi bỏ qua các văn bản chứa từ khóa chính xác nếu ý nghĩa tổng thể không "khớp".
+
+**Các phương án đã cân nhắc:**
+
+| Phương án | Ưu điểm | Nhược điểm |
+|-----------|---------|-----------|
+| **Dense Only** (Baseline) | Dễ triển khai, ngữ cảnh lấy về mạch lạc (High Completeness). | Yếu với Exact Match keyword. |
+| **Sparse Only** (BM25) | Bắt keyword 100% chuẩn (cải thiện Faithfulness). | Bị đứt gãy ngữ cảnh khi lôi về các chunk chứa từ khóa chung chung, điểm Completeness nát. |
+| **Hybrid (RRF)** | Cân bằng được cả hai. | Phức tạp, dễ dính "Noise Overload" (bị loãng context do mix nhiều nguồn). |
+
+**Phương án đã chọn và lý do:**
+Qua bàn bạc (Tech Lead + Retrieval Owner), nhóm quyết định triển khai **Hybrid (RRF)** nhưng cho chạy A/B Test cẩn thận từng biến. Ban đầu, kết quả chạy Sparse làm Faithfulness tăng nhưng Completeness giảm sâu (còn 2.90). Sau khi điều chỉnh sang Hybrid, điểm Completeness hồi phục lên 3.60. Đây là sự đánh đổi cần thiết để hệ thống bắt buộc phải hoạt động tốt trên các keyword mã lỗi, chấp nhận hi sinh một chút độ bao phủ câu từ.
+
+**Bằng chứng từ scorecard/tuning-log:**
+Theo `tuning-log.md`, khi dùng Baseline thì Faithfulness là 3.80, Completeness là 3.90. Khi chuyển sang Sparse, Faithfulness tăng vọt lên 4.20 nhưng Completeness tụt đáy xuống 2.90. 
 
 ---
+
+## 3. Kết quả grading questions (100–150 từ)
+
+**Ước tính điểm raw:** 92/98
+
+**Câu tốt nhất:** Nhóm xử lý xuất sắc nhóm câu hỏi về thủ tục, ví dụ các câu liên quan đến quy trình "hoàn tiền" hoặc cấp quyền cơ bản. Lý do là Paragraph-based chunking đã phát huy tác dụng bảo toàn trọn vẹn danh sách các bước cần thực hiện, và Dense Retrieval làm tròn vai.
+
+**Câu fail:** Câu hỏi q09 (ERR-403) hoặc q07 (dùng tên alias cũ là "Approval Matrix"). Root cause ở đây là do **Retrieval Noise**. Khi BM25 kéo về quá nhiều text chứa từ "Approval", nó làm loãng độ tập trung của prompt, LLM chỉ trả lời đúng câu chốt mà quên đi các phân tích phụ.
+
+**Câu gq07 (abstain):** Pipeline đã chặn tốt lỗi Hallucination. Nếu không đủ Context, model kiên quyết trả lời "Tôi không biết" dựa vào dòng lệnh chặt chẽ trong System Prompt.
+
+---
+
+## 4. A/B Comparison — Baseline vs Variant (150–200 từ)
+
+Nhóm đã sử dụng `tuning-log.md` để so sánh và lựa chọn hướng đi.
+
+**Biến đã thay đổi (chỉ 1 biến):** Chiến thuật Retrieval (Dense vs Sparse)
+
+| Metric | Baseline (Dense) | Variant (Sparse) | Delta |
+|--------|---------|---------|-------|
+| Faithfulness | 3.80 | 4.20 | +0.40 |
+| Answer Relevance | 3.80 | 3.80 | 0.00 |
+| Context Recall | 5.00 | 5.00 | 0.00 |
+| Completeness | 3.90 | 2.90 | -1.00 |
+
+**Kết luận:**
+Việc sử dụng Sparse (chỉ dùng keyword) cho thấy ưu điểm về khả năng "bắt búng" từ khóa giúp câu trả lời trung thực (Faithfulness) hơn. Tuy nhiên, nó kéo theo hiện tượng **"Noise Overload"** khiến ngữ cảnh bị đứt đoạn, LLM thiếu đi các câu diễn giải nên điểm Completeness bị rớt thê thảm (-1.00). Chiến thuật cấp nhóm là dùng **Hybrid** để kéo lại điểm Completeness này.
+
+---
+
+## 5. Phân công và đánh giá nhóm (100–150 từ)
+
+**Phân công thực tế:**
+
+| Thành viên | Phần đã làm | Sprint |
+|------------|-------------|--------|
+| Nam | Thiết kế luồng kiến trúc (Pipeline) + Viết Logic chính. | 1, 2 |
+| Tuân | Cài đặt ChromaDB, Embedding và thuật toán Sparse/Hybrid. | 1, 3 |
+| Ly | Cài đặt logic Prompt LLM-as-Judge & Parse JSON Scorecard. | 4 |
+| Cao | Viết Documents, vẽ luồng Mermaid, chạy A/B Test & Tuning. | All |
+
+**Điều nhóm làm tốt:**
+Chia task theo chuẩn luồng dữ liệu. Tài liệu hóa chặt chẽ ngay từ đầu (Tuning log) nên giúp tiết kiệm cực nhiều thời gian lúc ngồi debug.
+
+**Điều nhóm làm chưa tốt:**
+Cần đọc qua lab buổi học trước để lên lớp nắm bắt được luồng chạy nhanh hơn
+
+---
+
+## 6. Nếu có thêm 1 ngày, nhóm sẽ làm gì? (50–100 từ)
+
+Với kết quả Context Recall đang ở mức 5.0 tuyệt đối nhưng Completeness lại trồi sụt do thông tin rác, nhóm chắc chắn sẽ tích hợp thêm **Reranker (Cross-Encoder)** vào Pipeline. Bước này sẽ đọc lướt lại Top 10 kết quả từ Hybrid, loại thẳng tay các kết quả chỉ trùng Keyword nhưng sai ý nghĩa, qua đó kỳ vọng Completeness sẽ vượt mốc 4.0.
