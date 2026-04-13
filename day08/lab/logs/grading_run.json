@@ -1,0 +1,124 @@
+[
+  {
+    "id": "gq01",
+    "question": "SLA xử lý ticket P1 đã thay đổi như thế nào so với phiên bản trước?",
+    "answer": "SLA xử lý ticket P1 đã thay đổi từ phiên bản trước như sau: Thời gian xử lý và khắc phục (resolution) đã được cập nhật từ 6 giờ xuống 4 giờ trong phiên bản v2026.1 (2026-01-15) [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] support/sla-p1-2026.pdf | Phần 5: Lịch sử phiên bản.",
+    "sources": [
+      "it/access-control-sop.md",
+      "support/sla-p1-2026.pdf"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:33"
+  },
+  {
+    "id": "gq02",
+    "question": "Khi làm việc remote, tôi phải dùng VPN và được kết nối trên tối đa bao nhiêu thiết bị?",
+    "answer": "Khi làm việc remote, bạn phải sử dụng VPN và mỗi tài khoản được kết nối VPN trên tối đa 2 thiết bị cùng lúc [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] support/helpdesk-faq.md | Section 2: VPN và kết nối từ xa",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "hr/leave-policy-2026.pdf",
+      "it/access-control-sop.md"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:38"
+  },
+  {
+    "id": "gq03",
+    "question": "Đơn hàng mua trong chương trình Flash Sale và đã kích hoạt sản phẩm có được hoàn tiền không?",
+    "answer": "Đơn hàng đã áp dụng mã giảm giá đặc biệt theo chương trình khuyến mãi Flash Sale và sản phẩm đã được kích hoạt sẽ không được hoàn tiền [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] policy/refund-v4.pdf | Điều 3: Điều kiện áp dụng và ngoại lệ.",
+    "sources": [
+      "policy/refund-v4.pdf"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:42"
+  },
+  {
+    "id": "gq04",
+    "question": "Nếu chọn nhận store credit thay vì hoàn tiền, tôi được bao nhiêu phần trăm so với số tiền gốc?",
+    "answer": "Nếu bạn chọn nhận store credit thay vì hoàn tiền, bạn sẽ nhận được giá trị 110% so với số tiền gốc [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] policy/refund-v4.pdf | Điều 5: Hình thức hoàn tiền.",
+    "sources": [
+      "policy/refund-v4.pdf"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:47"
+  },
+  {
+    "id": "gq05",
+    "question": "Contractor từ bên ngoài công ty có thể được cấp quyền Admin Access không? Nếu có, cần bao nhiêu ngày và có yêu cầu đặc biệt gì?",
+    "answer": "Có, contractor từ bên ngoài công ty có thể được cấp quyền Admin Access. Thời gian xử lý là 5 ngày làm việc và yêu cầu đặc biệt là phải hoàn thành training bắt buộc về security policy [2]. \n\nDanh sách nguồn đã sử dụng:\n[2] it/access-control-sop.md | Section 2: Phân cấp quyền truy cập.",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "it/access-control-sop.md"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:51"
+  },
+  {
+    "id": "gq06",
+    "question": "Lúc 2 giờ sáng xảy ra sự cố P1, on-call engineer cần cấp quyền tạm thời cho một engineer xử lý incident. Quy trình cụ thể như thế nào và quyền này tồn tại bao lâu?",
+    "answer": "Quy trình cụ thể để cấp quyền tạm thời cho một engineer xử lý incident trong trường hợp khẩn cấp P1 như sau:\n\n1. On-call IT Admin có thể cấp quyền tạm thời (tối đa 24 giờ) sau khi được Tech Lead phê duyệt bằng lời.\n2. Sau 24 giờ, phải có ticket chính thức hoặc quyền sẽ bị thu hồi tự động.\n3. Mọi quyền tạm thời phải được ghi log vào hệ thống Security Audit.\n\nQuyền này tồn tại tối đa 24 giờ [1]. \n\nNguồn đã sử dụng:\n[1] it/access-control-sop.md | Section 4: Escalation khi cần thay đổi quyền hệ thống.",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "it/access-control-sop.md",
+      "support/sla-p1-2026.pdf"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:23:58"
+  },
+  {
+    "id": "gq07",
+    "question": "Công ty sẽ phạt bao nhiêu nếu team IT vi phạm cam kết SLA P1?",
+    "answer": "Tôi xin lỗi, thông tin này không có trong tài liệu nội bộ.",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "it/access-control-sop.md",
+      "support/sla-p1-2026.pdf"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:24:02"
+  },
+  {
+    "id": "gq08",
+    "question": "Nhân viên phải báo trước bao nhiêu ngày để xin nghỉ phép năm? Con số này có giống với số ngày cần giấy tờ khi nghỉ ốm không?",
+    "answer": "Nhân viên phải báo trước ít nhất 3 ngày làm việc để xin nghỉ phép năm [2]. Số ngày này không giống với số ngày cần giấy tờ khi nghỉ ốm, vì nghỉ ốm yêu cầu thông báo cho Line Manager trước 9:00 sáng ngày nghỉ và cần giấy tờ y tế chỉ khi nghỉ trên 3 ngày liên tiếp [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] hr/leave-policy-2026.pdf | Phần 1: Các loại nghỉ phép  \n[2] hr/leave-policy-2026.pdf | Phần 2: Quy trình xin nghỉ phép",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "hr/leave-policy-2026.pdf",
+      "it/access-control-sop.md"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:24:08"
+  },
+  {
+    "id": "gq09",
+    "question": "Mật khẩu tài khoản công ty cần đổi định kỳ không? Nếu có, hệ thống sẽ nhắc nhở trước bao nhiêu ngày và đổi qua đâu?",
+    "answer": "Có, mật khẩu phải được thay đổi mỗi 90 ngày. Hệ thống sẽ nhắc nhở 7 ngày trước khi hết hạn [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] support/helpdesk-faq.md | Section 1: Tài khoản và mật khẩu",
+    "sources": [
+      "support/helpdesk-faq.md",
+      "it/access-control-sop.md"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:24:12"
+  },
+  {
+    "id": "gq10",
+    "question": "Chính sách hoàn tiền hiện tại áp dụng cho đơn hàng đặt trước ngày 01/02/2026 không?",
+    "answer": "Chính sách hoàn tiền hiện tại áp dụng cho tất cả các đơn hàng được đặt trên hệ thống nội bộ kể từ ngày 01/02/2026. Các đơn hàng đặt trước ngày này sẽ áp dụng theo chính sách hoàn tiền phiên bản 3 [1]. \n\nDanh sách nguồn đã sử dụng:\n[1] policy/refund-v4.pdf",
+    "sources": [
+      "policy/refund-v4.pdf",
+      "it/access-control-sop.md"
+    ],
+    "chunks_retrieved": 5,
+    "retrieval_mode": "dense",
+    "timestamp": "2026-04-13T17:24:17"
+  }
+]
