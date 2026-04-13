@@ -72,7 +72,7 @@ retrieval_mode = "Sparse"   # Kết hợp Dense + BM25 (RRF)
 
 ---
 
-## Hybird (Kế hoạch tiếp theo)
+## Hybrid (Kế hoạch tiếp theo)
 
 **Biến thay đổi:** Tích hợp Reranking (Cohere Rerank)  
 **Config:**
