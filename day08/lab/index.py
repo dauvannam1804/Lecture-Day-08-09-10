@@ -248,6 +248,16 @@ def build_index(docs_dir: Path = DOCS_DIR, db_dir: Path = CHROMA_DB_DIR) -> None
         doc = preprocess_document(raw_text, str(filepath))
         chunks = chunk_document(doc)
         
+        # --- Lưu chunks để kiểm tra (Debug) ---
+        CHUNKS_LOG_DIR = Path(__file__).parent / "logs" / "chunks"
+        CHUNKS_LOG_DIR.mkdir(parents=True, exist_ok=True)
+        
+        doc_log_path = CHUNKS_LOG_DIR / f"{filepath.stem}.json"
+        with open(doc_log_path, "w", encoding="utf-8") as f:
+            import json
+            json.dump(chunks, f, ensure_ascii=False, indent=2)
+        print(f"    → Saved {len(chunks)} chunks to logs/chunks/{filepath.stem}.json")
+        
         chunk_ids = [f"{filepath.stem}_{i}" for i in range(len(chunks))]
         chunk_texts = [c["text"] for c in chunks]
         chunk_metadatas = [c["metadata"] for c in chunks]
