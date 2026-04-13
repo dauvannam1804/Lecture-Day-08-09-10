@@ -44,13 +44,13 @@ llm_model = gpt-4o-mini
 ## Sparse (Sprint 3)
 
 **Ngày:** 13/04/2026
-**Biến thay đổi:** retrieval_mode = "hybrid"
+**Biến thay đổi:** retrieval_mode = "Sparse"
 **Lý do chọn biến này:**
-Dựa trên giả thuyết rằng các câu hỏi chứa mã lỗi (ERR-...) hoặc alias/tên cũ (Approval Matrix) sẽ thất bại với Dense retrieval đơn thuần (do vector similarity không đủ mạnh để bắt các exact terms hoặc alias chưa được fine-tune). Hybrid retrieval kết hợp BM25 giúp đảm bảo recall cho các keyword chính xác này.
+Dựa trên giả thuyết rằng các câu hỏi chứa mã lỗi (ERR-...) hoặc alias/tên cũ (Approval Matrix) sẽ thất bại với Dense retrieval đơn thuần (do vector similarity không đủ mạnh để bắt các exact terms hoặc alias chưa được fine-tune). Sparse retrieval kết hợp BM25 giúp đảm bảo recall cho các keyword chính xác này.
 
 **Config thay đổi:**
 ```
-retrieval_mode = "hybrid"   # Kết hợp Dense + BM25 (RRF)
+retrieval_mode = "Sparse"   # Kết hợp Dense + BM25 (RRF)
 # Các tham số còn lại giữ nguyên như baseline
 ```
 
@@ -63,12 +63,12 @@ retrieval_mode = "hybrid"   # Kết hợp Dense + BM25 (RRF)
 | Completeness | 3.90/5 | 2.90/5 | -1.00 |
 
 **Nhận xét:**
-- Sparse (Hybrid) vẫn giữ được Context Recall tuyệt đối (5.0) nhưng điểm Faithfulness đã tăng lên, Completeness bị sụt giảm.
-- Nguyên nhân chính là do "Noise Overload": Hybrid mang về nhiều chunk chứa keyword trùng khớp nhưng ngữ cảnh lân cận không sát với ý nghĩa câu hỏi, dẫn đến việc LLM bị phân tâm khi tổng hợp thông tin.
+- Sparse (Sparse) vẫn giữ được Context Recall tuyệt đối (5.0) nhưng điểm Faithfulness đã tăng lên, Completeness bị sụt giảm.
+- Nguyên nhân chính là do "Noise Overload": Sparse mang về nhiều chunk chứa keyword trùng khớp nhưng ngữ cảnh lân cận không sát với ý nghĩa câu hỏi, dẫn đến việc LLM bị phân tâm khi tổng hợp thông tin.
 
 **Kết luận:**
 - Với bộ dữ liệu hiện tại, Dense Retrieval (Baseline) đang hiệu quả hơn về mặt sinh văn bản chất lượng cao.
-- Hybrid cần được tune thêm trọng số hoặc kết hợp Reranker để loại bỏ nhiễu trước khi đưa vào LLM.
+- Sparse cần được tune thêm trọng số hoặc kết hợp Reranker để loại bỏ nhiễu trước khi đưa vào LLM.
 
 ---
 
